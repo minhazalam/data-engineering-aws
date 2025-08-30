@@ -1,5 +1,5 @@
 -- create database for data modeling
---create database data_model;
+create database data_model;
 --use data_model;
 create table customer_transactions(
     customer_id int,
@@ -43,11 +43,11 @@ insert into customers(customer_id, customer_name, is_reward) values (1,'Amanda',
 (2, 'Toby','N');
 
 -- Query 1: Find all the customers that spent more than 30 dollars, who are they,
--- which store they bought it from, location of the store, what they bought and if they are a rewards member.
+-- which store they bought it from, location of the store, what they bought and if they are a rewards' member.
 select c.customer_name,s.store_id,s.state,ip.item_name,c.is_reward
 from customer_transactions
-join customers c on customer_transactions.customer_id = c.customer_id
-join items_purchased ip on c.customer_id = ip.customer_id
+inner join customers c on customer_transactions.customer_id = c.customer_id
+inner join items_purchased ip on c.customer_id = ip.customer_id
 inner join stores s on customer_transactions.store_id = s.store_id
 where spent>30;
 
@@ -86,3 +86,4 @@ alter column customer_city set default 'Unknown',
     alter column customer_state set default 'NA';
 
 select * from customer_address;
+
