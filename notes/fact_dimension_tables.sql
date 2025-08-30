@@ -1,7 +1,7 @@
 -- create database for data modeling
-create database data_model;
+--create database data_model;
 --use data_model;
-create table data_model.customer_transactions(
+create table customer_transactions(
     customer_id int,
     store_id int,
     spent float
@@ -55,3 +55,34 @@ where spent>30;
 select customer_id,spent
 from customer_transactions
 where customer_id=2;
+
+-- to test upsert : on conflict
+create table if not exists customer_address(
+    customer_id int primary key ,
+    customer_street varchar,
+    customer_city text not null,
+    customer_state text not null
+);
+
+insert into customer_address values(432, '758 Main Street', 'Chicago', 'IL');
+insert into customer_address values(432, '758 Main Street', 'Chicago', 'IL');
+
+insert into customer_address(customer_id, customer_street)
+values(432,'923 Knox Street, Suite 1')
+on conflict (customer_id)
+do update set customer_street=excluded.customer_street;
+
+INSERT INTO customer_address (customer_id, customer_street)
+VALUES
+    (
+        432, '923 Knox Street, Suite 1'
+    )
+ON CONFLICT (customer_id)
+    DO UPDATE
+    SET customer_street  = EXCLUDED.customer_street;
+
+alter table customer_address
+alter column customer_city set default 'Unknown',
+    alter column customer_state set default 'NA';
+
+select * from customer_address;
